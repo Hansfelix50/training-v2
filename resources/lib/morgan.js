@@ -1,7 +1,7 @@
 const logger = require('./logger');
 const morgan = require('morgan');
 
-module.exports = function (app) {
+function morganConfig(app) {
     app.use(morgan('short', {
         skip: function (req, res) {
             return res.statusCode >= 400;
@@ -19,4 +19,6 @@ module.exports = function (app) {
             write: message => logger.error(message.trim()),
         }
     }));
-};
+}
+
+module.exports = morganConfig;
