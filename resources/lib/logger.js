@@ -1,24 +1,42 @@
 const winston = require('winston');
+const { createLogger, format, transports } = winston;
+const { splat, combine, timestamp, printf } = format;
 
-const logger = new (winston.Logger)({
+//Formato de salida personalizado
+const customFormat = printf(({ timestamp, level, message, meta }) => {
+  return `[${level}]: ${timestamp} - ${message} - ${meta ? JSON.stringify(meta) : ''}`;
+});
+
+const logger = createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service' },
   transports: [
-    new winston.transports.File({
+    new transports.File({
       level: 'info',
-      json: false,
       handleExceptions: true,
       maxSize: 512000,
       maxFiles: 5,
       filename: `${__dirname}/log-de-aplicacion.log`,
-      prettyPrint: object => { return JSON.stringify(object) }
+      format: format.combine(
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        splat(),
+        customFormat,
+      ),
     }),
-    new winston.transports.Console({
+
+    new transports.Console({
       level: 'debug',
       handleExceptions: true,
       json: false,
-      colorize: true,
-      prettyPrint: object => { return JSON.stringify(object) }
+      format: format.combine(
+        format.colorize(),
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        splat(),
+        customFormat,
+      ),
     })
   ]
-})
+});
 
 module.exports = logger;

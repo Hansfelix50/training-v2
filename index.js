@@ -14,7 +14,7 @@ const jwtOptions = {
   jwtFromRequest: authJWT.ExtractJwt.fromAuthHeaderAsBearerToken()
 }
 
-let jwtStrategy = new authJWT.Strategy({ ...jwtOptions },(jwtPayload, next) => {
+let jwtStrategy = new authJWT.Strategy({ ...jwtOptions }, (jwtPayload, next) => {
   // usuarioDelPayLoad
   console.log(jwtPayload)
   next(null, {
@@ -36,8 +36,20 @@ app.use(bodyParser.json())
 
 
 app.use(morgan('short', {
+  skip: function (req, res) {
+    return res.statusCode >= 400;
+  },
   stream: {
     write: message => logger.info(message.trim()),
+  }
+}));
+
+app.use(morgan('short', {
+  skip: function (req, res) {
+    return res.statusCode < 400;
+  },
+  stream: {
+    write: message => logger.error(message.trim()),
   }
 }));
 
@@ -76,10 +88,10 @@ app.post('/', (req, res) => {
 })
 
 // UPDATE
-app.put('/', () => {})
+app.put('/', () => { })
 
 // DESTROY
-app.delete('/', () => {})
+app.delete('/', () => { })
 
 // CRUD
 // Create
