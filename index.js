@@ -1,8 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const morgan = require('morgan');
-
 const passport = require('passport');
 const authJWT = require('passport-jwt');
 
@@ -34,24 +31,7 @@ const app = express();
 
 app.use(bodyParser.json())
 
-
-app.use(morgan('short', {
-  skip: function (req, res) {
-    return res.statusCode >= 400;
-  },
-  stream: {
-    write: message => logger.info(message.trim()),
-  }
-}));
-
-app.use(morgan('short', {
-  skip: function (req, res) {
-    return res.statusCode < 400;
-  },
-  stream: {
-    write: message => logger.error(message.trim()),
-  }
-}));
+let morgan = require('./resources/lib/morgan')(app);
 
 // passport.use(new BasicStrategy((user, password, done) => {
 //   if (user === 'luis' && password === 'krowdy123') {

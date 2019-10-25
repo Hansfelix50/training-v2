@@ -9,7 +9,7 @@ const customFormat = printf(({ timestamp, level, message, meta }) => {
 
 const logger = createLogger({
   level: 'info',
-  format: winston.format.json(),
+  format: format.json(),
   defaultMeta: { service: 'user-service' },
   transports: [
     new transports.File({
