@@ -15,8 +15,9 @@ const products = [
 
 const users = [
   {
-    "username": "krowdy",
-    "password": "$2b$10$CXF3/toyOX8j3YMIYqbr8OpYgRZtNRXgGpbySb0WXp9DUDosENI2K"
+    'username': 'krowdy',
+    'nickname': 'krow',
+    'password': '$2b$10$CXF3/toyOX8j3YMIYqbr8OpYgRZtNRXgGpbySb0WXp9DUDosENI2K'
   }
 ];
 

@@ -3,6 +3,7 @@ const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const validateUsers = require('./users.validate');
 let users = require('../../db').users;
 
 const usersRoutes = express.Router();
@@ -13,7 +14,7 @@ usersRoutes.get('/', (req, res) => {
   logger.info('Se envió correctamente los usuarios', `total: ${users.length}`);
 });
 
-usersRoutes.post('/', (req, res) => {
+usersRoutes.post('/', validateUsers, (req, res) => {
   const hp = bcrypt.hashSync(req.body.password, 10)
 
   const newUser = { ...req.body, id: uuidv4(), password: hp };
