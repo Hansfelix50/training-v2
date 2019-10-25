@@ -24,14 +24,16 @@ passport.use(jwtStrategy)
 const productsRoutes = require('./resources/productos/products.routes');
 const usersRoutes = require('./resources/users/users.routes');
 
+
 const logger = require('./resources/lib/logger');
+const morgan = require('./resources/lib/morgan');
 
 const app = express();
 
 
 app.use(bodyParser.json())
 
-let morgan = require('./resources/lib/morgan')(app);
+morgan(app);
 
 // passport.use(new BasicStrategy((user, password, done) => {
 //   if (user === 'luis' && password === 'krowdy123') {
@@ -56,29 +58,27 @@ app.use('/users', usersRoutes);
 /************************** */
 // READ
 //  passport.authenticate('basic', { session: false })
+
 app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-  console.log(req.user)
-  res.status(200).send('Hola papu');
+  res.status(200).send('¡Hola papu!');
+  logger.info('Se envió correctamente el mensaje', '¡Hola papu!');
 });
 
 // CREATE
 app.post('/', (req, res) => {
-  console.log(req.body);
   res.json(req.body);
+  logger.info('Se envió correctamente el mensaje', req.body);
 })
 
 // UPDATE
-app.put('/', () => { })
+app.put('/', () => {   
+  logger.error('Método PUT no definido');
+})
 
 // DESTROY
-app.delete('/', () => { })
-
-// CRUD
-// Create
-// Read
-// Update
-// Destroy
-
+app.delete('/', () => {   
+  logger.error('Método DELETE no definido');
+})
 
 const PORT = 3000;
 

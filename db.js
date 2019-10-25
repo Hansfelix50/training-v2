@@ -13,7 +13,12 @@ const products = [
   },
 ]
 
-const users = [];
+const users = [
+  {
+    "username": "krowdy",
+    "password": "$2b$10$CXF3/toyOX8j3YMIYqbr8OpYgRZtNRXgGpbySb0WXp9DUDosENI2K"
+  }
+];
 
 // Trailing comma
 module.exports = {

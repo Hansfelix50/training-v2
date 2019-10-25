@@ -1,13 +1,11 @@
 const express = require('express')
 const uuidv4 = require('uuid/v4');
-
-const bcrypt = require('bcrypt')
-
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 let users = require('../../db').users;
 
-const usersRoutes = express.Router()
+const usersRoutes = express.Router();
 
 usersRoutes.get('/', (req, res) => {
   res.json(users);
