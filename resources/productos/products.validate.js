@@ -11,6 +11,7 @@ const validateProduct = (req, res, next) => {
   const validation = productSchema.validate(req.body);
 
   if (validation.error) {
+    logger.error('Error en la validación del producto:', req.body);
     return res.status(403).send('Verifica tus datos')
   }
   next()

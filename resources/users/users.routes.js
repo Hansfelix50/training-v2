@@ -7,8 +7,10 @@ let users = require('../../db').users;
 
 const usersRoutes = express.Router();
 
+// READ
 usersRoutes.get('/', (req, res) => {
   res.json(users);
+  logger.info('Se envió correctamente los usuarios', `total: ${users.length}`);
 });
 
 usersRoutes.post('/', (req, res) => {
@@ -17,9 +19,12 @@ usersRoutes.post('/', (req, res) => {
   const newUser = { ...req.body, id: uuidv4(), password: hp };
 
   users.push(newUser);
+
   res.json(newUser);
+  logger.info('Se guardo correctamente el producto', newUser.id);
 })
 
+//LOGIN
 usersRoutes.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -31,11 +36,13 @@ usersRoutes.post('/login', (req, res) => {
   if (isAuthenticated) {
     const token = jwt.sign({ id: user.id }, 'SECRET_KEY', { expiresIn: '10h' })
 
-    res.json({ token })
+    res.json({ token });
+    logger.info('Se autentico al usuario', user.id);
+
   } else {
     res.status(401).send('Verifica tu password');
+    logger.error('Verifica tu password');
   }
 })
-
 
 module.exports = usersRoutes;
