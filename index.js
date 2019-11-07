@@ -3,8 +3,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const authJWT = require('passport-jwt');
 
-
-// passport.use(authJWT)
+const config = require('./config')
 
 const jwtOptions = {
   secretOrKey: 'SECRET_KEY',
@@ -26,10 +25,22 @@ const usersRoutes = require('./resources/users/users.routes');
 
 
 const logger = require('./resources/lib/logger');
+<<<<<<< HEAD
 const morgan = require('./resources/lib/morgan');
+=======
+const mongoose = require('mongoose')
+>>>>>>> cfd225265b093658c4c9cc267de348bad834236f
 
 const app = express();
 
+
+mongoose.connect('mongodb://127.0.0.1:27017/training', { useNewUrlParser: true });
+mongoose.connection.on('error', (error) => {
+  console.log('==========================')
+  logger.error(error);
+  logger.error('Fallo la conexion a mongodb');
+  process.exit(1);
+});
 
 app.use(bodyParser.json())
 
@@ -76,6 +87,7 @@ app.put('/', () => {
 })
 
 // DESTROY
+<<<<<<< HEAD
 app.delete('/', () => {   
   logger.error('Método DELETE no definido');
 })
@@ -84,4 +96,15 @@ const PORT = 3000;
 
 app.listen(PORT, () => {
   console.log(`Nuestra app esta escuchando el puerto ${PORT}`);
+=======
+app.delete('/', () => {})
+
+// CRUD
+// Create
+// Read
+// Update
+// Destroy
+app.listen(config.PORT, () => {
+  console.log(`Nuestra app esta escuchando el puerto ${config.PORT}`);
+>>>>>>> cfd225265b093658c4c9cc267de348bad834236f
 })
