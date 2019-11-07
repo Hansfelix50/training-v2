@@ -57,3 +57,12 @@ Hacer la lógica correspondiente para validar que los productos tengan un owner 
 Implementar todo lo avanzado en otro lenguaje con otro framework. (No vale PHP)
 
 
+## Semana 3:
+Implementar validacion de registro de usuarios con un servicio de mensajeria de texto, al momento de registrarse se debe enviar un codigo por SMS que validara al usuario registrado.
+Implementar URL firmadas(AWS) para subir archivos estaticos(imagenes, videos, etc).
+## Reto:
+Seguir implementando todo esto en su otra app con otro lenguaje.
+
+
+
+
