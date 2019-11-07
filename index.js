@@ -25,11 +25,8 @@ const usersRoutes = require('./resources/users/users.routes');
 
 
 const logger = require('./resources/lib/logger');
-<<<<<<< HEAD
 const morgan = require('./resources/lib/morgan');
-=======
 const mongoose = require('mongoose')
->>>>>>> cfd225265b093658c4c9cc267de348bad834236f
 
 const app = express();
 
@@ -87,16 +84,6 @@ app.put('/', () => {
 })
 
 // DESTROY
-<<<<<<< HEAD
-app.delete('/', () => {   
-  logger.error('Método DELETE no definido');
-})
-
-const PORT = 3000;
-
-app.listen(PORT, () => {
-  console.log(`Nuestra app esta escuchando el puerto ${PORT}`);
-=======
 app.delete('/', () => {})
 
 // CRUD
@@ -106,5 +93,4 @@ app.delete('/', () => {})
 // Destroy
 app.listen(config.PORT, () => {
   console.log(`Nuestra app esta escuchando el puerto ${config.PORT}`);
->>>>>>> cfd225265b093658c4c9cc267de348bad834236f
 })

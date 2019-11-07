@@ -3,11 +3,8 @@ const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-<<<<<<< HEAD
 const validateUsers = require('./users.validate');
-=======
 const config = require('../../config')
->>>>>>> cfd225265b093658c4c9cc267de348bad834236f
 let users = require('../../db').users;
 
 const usersRoutes = express.Router();
