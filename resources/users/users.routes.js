@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const validateUsers = require('./users.validate');
 const config = require('../../config')
+const logger = require('../lib/logger');
 let users = require('../../db').users;
 const userController = require('./users.controller');
 let { generateValidationCode, sendValidationCode } = require('../lib/sms');
@@ -17,6 +18,7 @@ usersRoutes.get('/', (req, res) => {
   logger.info('Se envió correctamente los usuarios', `total: ${users.length}`);
 });
 
+//CREATE
 usersRoutes.post('/', validateUsers, (req, res) => {
   const hp = bcrypt.hashSync(req.body.password, 10);
   const validationCode = generateValidationCode();
@@ -32,6 +34,26 @@ usersRoutes.post('/', validateUsers, (req, res) => {
   res.json('Se ha creado correctamente el usuario, te hemos enviado un SMS para validar la cuenta.');
 
   logger.info('Se ha creado correctamente el usuario ', newUser.id);
+})
+
+// VALIDATE
+usersRoutes.post('/validate', async (req, res) => {
+  const username = req.body.username;
+  const validationCode = req.body.validationCode;
+
+  // Buscar usuario en la BD
+  const user = await userController.getUserByUsername({ username });
+
+  if (user.validationCode === validationCode) {
+    await userController.updateUser(user._id, { validationStatus: 'validated' });
+
+    res.json('La cuenta del usuario ha sido verificada')
+    logger.info('La cuenta del usuario ha sido verificada', user.id);
+
+  } else {
+    res.status(401).send('El código ingresado no es correcto');
+    logger.error('Se ingresó un código de validación incorrecto ', user.id);
+  }
 })
 
 //LOGIN

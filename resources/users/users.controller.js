@@ -12,6 +12,10 @@ function getUser(id) {
     return User.findById(id);
 }
 
+function getUserByUsername(username) {
+    return User.findOne(username)
+}
+
 function updateUser(id, user) {
     return User.findOneAndUpdate({ _id: id }, { ...user }, { new: true });
 }
@@ -24,6 +28,7 @@ module.exports = {
     createUser,
     getUsers,
     getUser,
+    getUserByUsername,
     updateUser,
     deleteUser,
 }

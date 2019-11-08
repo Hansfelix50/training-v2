@@ -9,11 +9,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Usuario debe tener un name']
     },
-    nickname: {
+    username: {
         type: String,
         maxlength: 20,
         minlength: 1,
-        required: [true, 'Usuario debe tener una nickname']
+        required: [true, 'Usuario debe tener una username']
     },
     email: {
         type: String,
