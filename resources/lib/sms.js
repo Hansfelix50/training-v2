@@ -1,4 +1,5 @@
-const request = require('request');
+var clockwork = require('clockwork')({ key: '0799b80b7432364b91b84eafd68d11bedbdb144a' });
+const logger = require('../lib/logger');
 
 // Generar código de validación por SMS
 function generateValidationCode() {
@@ -16,31 +17,16 @@ function sendValidationCode(cellphone, validationCode) {
 
     //Docs: https://www.wausms.com/static/es/documentation_rest.pdf
 
-    let username = "hansfelix50@gmail.com";
-    let password = "Xico.18.93";
-
-    var options = {
-        url: 'https://dashboard.wausms.com/Api/rest/message',
-        auth: {
-            user: username,
-            password: password
-        },
-        body: JSON.stringify({
-            to: [cellphone],
-            text: `Tú código de validación es ${validationCode} `,
-            from: "msg"
-        })
-    }
-
-    request.post(options, function (err, res, body) {
-        if (err) {
-            console.dir(err)
-            return
-        }
-        console.dir('headers', res.headers)
-        console.dir('status code', res.statusCode)
-        console.dir(body)
-    })
+    clockwork.sendSms({ To: cellphone, Content: `Tu código de validación es ${validationCode}` },
+        function (error, resp) {
+            if (error) {
+                console.log('Something went wrong', error);
+                logger.error('Error en el envío del código de validación');
+            } else {
+                console.log('Message sent', resp.responses[0].id);
+                logger.info('Se envió correctamente el código de validación al número', cellphone);
+            }
+        });
 }
 
 module.exports = {
