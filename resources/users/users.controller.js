@@ -1,7 +1,7 @@
-const User = require('./users.model');
+const User = require('./users.models');
 
-function createUser(User) {
-    return new User(User).save();
+function createUser(user) {
+    return new User(user).save();
 }
 
 function getUsers() {

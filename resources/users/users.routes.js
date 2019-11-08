@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const validateUsers = require('./users.validate');
 const config = require('../../config')
 let users = require('../../db').users;
+const userController = require('./users.controller');
+let { generateValidationCode, sendValidationCode } = require('../lib/sms');
 
 const usersRoutes = express.Router();
 
@@ -16,14 +18,20 @@ usersRoutes.get('/', (req, res) => {
 });
 
 usersRoutes.post('/', validateUsers, (req, res) => {
-  const hp = bcrypt.hashSync(req.body.password, 10)
+  const hp = bcrypt.hashSync(req.body.password, 10);
+  const validationCode = generateValidationCode();
 
-  const newUser = { ...req.body, id: uuidv4(), password: hp };
+  const newUser = { ...req.body, id: uuidv4(), password: hp, validationCode, validationStatus: 'pending' };
 
-  users.push(newUser);
+  //Creación del usuario en DV
+  userController.createUser(newUser);
 
-  res.json(newUser);
-  logger.info('Se guardo correctamente el producto', newUser.id);
+  //Enviar código de validación por SMS 
+  sendValidationCode(newUser.cellphone);
+
+  res.json('Se ha creado correctamente el usuario, te hemos enviado un SMS para validar la cuenta.');
+
+  logger.info('Se ha creado correctamente el usuario ', newUser.id);
 })
 
 //LOGIN

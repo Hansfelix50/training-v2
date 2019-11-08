@@ -1,8 +1,12 @@
 const Joi = require('@hapi/joi');
+const logger = require('../lib/logger');
 
 const UserSchema = Joi.object({
-    name: Joi.string().alphanum().min(2).max(150).required(),
-    nickname: Joi.string().alphanum().min(2).max(50).required()
+    name: Joi.string().min(2).max(150).required(),
+    nickname: Joi.string().min(2).max(50).required(),
+    email: Joi.string().required(),
+    password: Joi.string().required(),
+    cellphone: Joi.string().required(),
 });
 
 const validateUser = (req, res, next) => {
