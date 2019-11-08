@@ -79,8 +79,7 @@ usersRoutes.post('/login', (req, res) => {
 })
 
 //SUBIR IMAGEN
-
-route.get('/signed-url-put-object', async (req, res) => {
+usersRoutes.get('/signed-url-put-object', async (req, res) => {
   AWS.config.update({
     accessKeyId: 'AAAAAAAAAAAAAAAA', // Borrado
     secretAccessKey: 'J21//xxxxxxxxxxx', // Borrado
