@@ -15,8 +15,6 @@ function generateValidationCode() {
 
 function sendValidationCode(cellphone, validationCode) {
 
-    //Docs: https://www.wausms.com/static/es/documentation_rest.pdf
-
     clockwork.sendSms({ To: cellphone, Content: `Tu código de validación es ${validationCode}` },
         function (error, resp) {
             if (error) {

@@ -2,6 +2,7 @@ const express = require('express')
 const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const AWS = require('aws-sdk');
 
 const validateUsers = require('./users.validate');
 const config = require('../../config')
@@ -75,6 +76,43 @@ usersRoutes.post('/login', (req, res) => {
     res.status(401).send('Verifica tu password');
     logger.error('Verifica tu password');
   }
+})
+
+//SUBIR IMAGEN
+
+route.get('/signed-url-put-object', async (req, res) => {
+  AWS.config.update({
+    accessKeyId: 'AAAAAAAAAAAAAAAA', // Borrado
+    secretAccessKey: 'J21//xxxxxxxxxxx', // Borrado
+    region: 'sa-east-1',
+    signatureVersion: 'v4',
+  });
+
+  const params = {
+    Bucket: 'your-bucket-name',
+    Key: 'my-awesome-object.webm',
+    Expires: 30 * 60, // 30 minutes
+    ContentType: 'video/webm'
+  };
+  const options = {
+    signatureVersion: 'v4',
+    region: 'eu-west-1', // same as your bucket
+    endpoint: new AWS.Endpoint('your-bucket-name.s3-accelerate.amazonaws.com'), useAccelerateEndpoint: true,
+  }
+  const client = new AWS.S3(options);
+  const signedURL = await (new Promise((resolve, reject) => {
+    client.getSignedUrl('putObject', params, (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    });
+  }));
+
+  return res.json({
+    signedURL,
+  })
 })
 
 module.exports = usersRoutes;
