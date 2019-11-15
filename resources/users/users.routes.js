@@ -1,10 +1,12 @@
-const express = require('express')
-const uuidv4 = require('uuid/v4');
+const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const AWS = require('aws-sdk');
 
 const validateUsers = require('./users.validate');
+const processError = require('../lib/errorHandler').processError;
+const { UserNotFound } = require('./users.error');
+
 const config = require('../../config')
 const logger = require('../lib/logger');
 let users = require('../../db').users;
@@ -14,28 +16,34 @@ let { generateValidationCode, sendValidationCode } = require('../lib/sms');
 const usersRoutes = express.Router();
 
 // READ
-usersRoutes.get('/', (req, res) => {
-  res.json(users);
+usersRoutes.get('/', processError(async (req, res) => {
+  let users = await userController.getUsers();
   logger.info('Se envió correctamente los usuarios', `total: ${users.length}`);
-});
+  res.json(users);
+}));
 
 //CREATE
-usersRoutes.post('/', validateUsers, (req, res) => {
+usersRoutes.post('/', validateUsers, processError(async (req, res) => {
   const hp = bcrypt.hashSync(req.body.password, 10);
-  const validationCode = generateValidationCode();
+  const validationCode = generateValidationCode(); // Generar código para envío de SMS
+  const newUser = { ...req.body, password: hp, validationCode, validationStatus: 'pending' };
+  await userController.create(newUser);
+  sendValidationCode(newUser.cellphone); //Enviar código de validación por SMS 
 
-  const newUser = { ...req.body, id: uuidv4(), password: hp, validationCode, validationStatus: 'pending' };
+  res.json('Se creó correctamente el usuario, te hemos enviado un SMS para validar la cuenta.');
+  logger.info('Se ha creado correctamente el usuario: ', newUser.id);
 
-  //Creación del usuario en DV
-  userController.createUser(newUser);
+}));
 
-  //Enviar código de validación por SMS 
-  sendValidationCode(newUser.cellphone);
+// UPDATE
+usersRoutes.put('/:id', validateUsers, processError(async (req, res) => {
+  let user = await userController.get(req.params.id);
+  if (user === null) throw new UserNotFound('El usuario no existe.');
+  await userController.update(req.params.id, req.body)
 
-  res.json('Se ha creado correctamente el usuario, te hemos enviado un SMS para validar la cuenta.');
-
-  logger.info('Se ha creado correctamente el usuario ', newUser.id);
-})
+  res.json('Se actualizó correctamente el usuario.');
+  logger.info('Se actualizó correctamente el usuario.');
+}));
 
 // VALIDATE
 usersRoutes.post('/validate', async (req, res) => {

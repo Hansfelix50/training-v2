@@ -17,6 +17,8 @@ function processDBError(err, req, res, next) {
 }
 
 function catchResolver(err, req, res, next) {
+    console.log("res ->", res)
+    console.log("err ->", err)
     res.status(err.status).send(err.message);
 }
 

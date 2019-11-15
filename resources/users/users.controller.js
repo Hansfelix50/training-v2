@@ -1,6 +1,6 @@
 const User = require('./users.models');
 
-function createUser(user) {
+function create(user) {
     return new User(user).save();
 }
 
@@ -8,7 +8,7 @@ function getUsers() {
     return User.find({});
 }
 
-function getUser(id) {
+function get(id) {
     return User.findById(id);
 }
 
@@ -16,19 +16,19 @@ function getUserByUsername(username) {
     return User.findOne(username)
 }
 
-function updateUser(id, user) {
+function update(id, user) {
     return User.findOneAndUpdate({ _id: id }, { ...user }, { new: true });
 }
 
-function deleteUser(id) {
+function remove(id) {
     return User.findOneAndDelete(id);
 }
 
 module.exports = {
-    createUser,
+    create,
     getUsers,
-    getUser,
+    get,
     getUserByUsername,
-    updateUser,
-    deleteUser,
+    update,
+    remove,
 }

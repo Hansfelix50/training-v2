@@ -15,10 +15,9 @@ productsRoutes.get('/', processError(async (req, res) => {
   res.json(products);
 }));
 
-
 // CREATE
 productsRoutes.post('/', validateProduct, processError(async (req, res) => {
-  const newProduct = { ...req.body, id: uuidv4() };
+  const newProduct = req.body;
   await productsController.create(newProduct);
 
   res.json('Se creó correctamente el producto');

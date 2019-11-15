@@ -61,6 +61,7 @@ app.use('/products', productsRoutes);
 app.use('/users', usersRoutes);
 
 // Errores
+app.use(errorHandler.processDBError);
 app.use(errorHandler.catchResolver);
 
 // SON EJEMPLOS
