@@ -1,44 +1,48 @@
 const express = require('express')
-const uuidv4 = require('uuid/v4');
+const logger = require('../lib/logger');
 
+const productsController = require('./products.controller');
 const validateProduct = require('./products.validate');
-let products = require('../../db').products;
+const processError = require('../lib/errorHandler').processError;
+const { ProductNotFound } = require('./products.error');
 
 const productsRoutes = express.Router()
 
 // READ
-productsRoutes.get('/', (req, res) => {
-  res.json(products);
+productsRoutes.get('/', processError(async (req, res) => {
+  let products = await productsController.getProducts();
   logger.info('Se envió correctamente los productos', `total: ${products.length}`);
-});
+  res.json(products);
+}));
+
 
 // CREATE
-productsRoutes.post('/', validateProduct, (req, res) => {
+productsRoutes.post('/', validateProduct, processError(async (req, res) => {
   const newProduct = { ...req.body, id: uuidv4() };
-  products.push(newProduct);
-  res.json(newProduct);
-  logger.info('Se guardo correctamente el producto', newProduct.id);
-})
+  await productsController.create(newProduct);
+
+  res.json('Se creó correctamente el producto');
+  logger.info('Se creó correctamente el producto: ', newProduct.id);
+}));
 
 // UPDATE
-productsRoutes.put('/:id', (req, res) => {
-  const filterProduct = products.filter(product => product.id === req.params.id)[0];
-  const updatedProduct = { ...filterProduct, ...req.body };
+productsRoutes.put('/:id', validateProduct, processError(async (req, res) => {
+  let product = await productsController.get(req.params.id);
+  if (product === null) throw new ProductNotFound('El producto no existe.');
+  await productsController.update(req.params.id, req.body)
 
-  res.json(updatedProduct);
-  logger.info('Se actualizó correctamente el producto', req.params.id);
-})
+  res.json('Se actualizó correctamente el producto.');
+  logger.info('Se actualizó correctamente el producto.');
+}));
 
 // DESTROY
-productsRoutes.delete('/:id', (req, res) => {
-  const filterProduct = products.filter(product => product.id === req.params.id)[0];
+productsRoutes.delete('/:id', processError(async (req, res) => {
+  let product = await productsController.get(req.params.id);
+  if (product === null) throw new ProductNotFound('El producto no existe.');
+  await productsController.remove(req.params.id)
 
-  const productsWithoutSelected = products.filter(product => product.id !== req.params.id)[0];
-
-  products = productsWithoutSelected;
-
-  res.json(filterProduct);
-  logger.info('Se eliminó correctamente el producto', req.params.id);
-});
+  res.json('Se eliminó correctamente el producto.');
+  logger.info('Se eliminó correctamente el producto.');
+}));
 
 module.exports = productsRoutes;

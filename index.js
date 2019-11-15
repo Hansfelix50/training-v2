@@ -4,6 +4,7 @@ const passport = require('passport');
 const authJWT = require('passport-jwt');
 
 const config = require('./config')
+const errorHandler = require('./resources/lib/errorHandler');
 
 const jwtOptions = {
   secretOrKey: 'SECRET_KEY',
@@ -54,8 +55,13 @@ morgan(app);
 // app.use(passport.initialize())
 
 
+
+
 app.use('/products', productsRoutes);
 app.use('/users', usersRoutes);
+
+// Errores
+app.use(errorHandler.catchResolver);
 
 // SON EJEMPLOS
 // logger.log('log', 'Hello distributed log files!');

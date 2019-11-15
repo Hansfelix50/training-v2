@@ -6,7 +6,7 @@ function processError(fn) {
         fn(req, res, next).catch(next);
     }
 }
-// new CustomProductError
+
 function processDBError(err, req, res, next) {
     if (err instanceof mongoose.Error || err.name === 'MongoError') {
         logger.error('Ocurrió un error en la BD', err);
@@ -17,7 +17,6 @@ function processDBError(err, req, res, next) {
 }
 
 function catchResolver(err, req, res, next) {
-    console.log(err);
     res.status(err.status).send(err.message);
 }
 

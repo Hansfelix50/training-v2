@@ -8,12 +8,12 @@ function getProducts() {
   return Product.find({});
 }
 
-function get(id) {
-  return Product.findById(id);
+async function get(id) {
+  return await Product.findById(id);
 }
 
-function update(id, product) {
-  return Product.findOneAndUpdate({ _id: id }, { ...product }, { new: true });
+async function update(id, product) {
+  return await Product.findOneAndUpdate({ _id: id }, { ...product }, { new: true })
 }
 
 function remove(id) {
