@@ -4,6 +4,7 @@ const productoSchema = new mongoose.Schema({
   title: {
     type: String,
     minlength: 1,
+    maxlength: 100,
     required: [true, 'El producto debe tener un título']
   },
   price: {
